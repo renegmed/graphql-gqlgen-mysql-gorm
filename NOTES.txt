@@ -1,0 +1,175 @@
+Status: WORKING
+
+Article: Build a GraphQL API in Golang with MySQL and GORM using Gqlgen
+URL: https://www.soberkoder.com/go-graphql-api-mysql-gorm/
+Git: https://github.com/soberkoder/go-orders-graphql-api
+
+
+Create Order 
+
+mutation createOrder ($input: OrderInput!) {
+  createOrder(input: $input) {
+    id
+    customerName
+    items {
+      id
+      productCode
+      productName
+      quantity
+    }
+  }
+}
+
+
+mutation createOrder {
+  createOrder(input: {
+    customerName: "John Doe", 
+    orderAmount: 10.50, 
+    items: [
+      {productCode:"501", productName:"Item A", quantity: 2}
+      {productCode:"502", productName:"Item B", quantity: 5}
+    ]}) {
+    id
+    customerName
+    items {
+      id
+      productCode
+      productName
+      quantity
+    }
+  }
+}
+
+
+Query
+
+
+query orders {
+  orders {
+    id  
+    customerName
+    items {
+      productName
+      quantity
+    }
+  }
+}
+
+{
+  "data": {
+    "orders": [
+      {
+        "id": 2,
+        "customerName": "John Doe",
+        "items": [
+          {
+            "productName": "Item A",
+            "quantity": 2
+          },
+          {
+            "productName": "Item B",
+            "quantity": 5
+          }
+        ]
+      }
+    ]
+  }
+}
+
+Get Orders 
+
+query orders {
+  orders {
+    id  
+    customerName
+    items {
+      productName
+      quantity
+    }
+  }
+}
+
+{
+  "data": {
+    "orders": [
+      {
+        "id": 3,
+        "customerName": "Paul C.",
+        "items": [
+          {
+            "id": 10,
+            "productName": "Item A",
+            "quantity": 2
+          },
+          {
+            "id": 11,
+            "productName": "Item B",
+            "quantity": 5
+          },
+          {
+            "id": 12,
+            "productName": "Item B",
+            "quantity": 3
+          },
+          {
+            "id": 13,
+            "productName": "Item C",
+            "quantity": 5
+          }
+        ]
+      }
+    ]
+  }
+}
+
+Update Order 
+
+mutation updateOrder ($orderId: Int!, $input: OrderInput!) {
+  updateOrder(orderId: $orderId, input: $input) {
+    id
+    customerName
+    items {
+      id
+      productCode
+      productName
+      quantity
+    }
+  }
+}
+
+
+mutation updateOrder {
+  updateOrder(orderId: 3, 
+    input: {
+      customerName: "Paul C.", 
+      orderAmount: 15.55, 
+      items: [{productCode:"502", productName:"Item B", quantity: 3},
+              {productCode:"503", productName:"Item C", quantity: 5}]
+    }) {
+    id
+    customerName
+    items {
+      id
+      productCode
+      productName
+      quantity
+    }
+  }
+}
+
+Delete Order 
+
+mutation deleteOrder ($orderId: Int!) {
+  deleteOrder(orderId: $orderId)
+}
+
+
+mutation deleteOrder {
+  deleteOrder(orderId:1)
+}
+
+{
+  "data": {
+    "deleteOrder": true
+  }
+}
