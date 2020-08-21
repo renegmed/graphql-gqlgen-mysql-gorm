@@ -10,6 +10,7 @@ type Item {
     productCode: String!
     productName: String!
     quantity: Int!
+    orderId: Int!
 }
 
 input OrderInput {
@@ -22,14 +23,16 @@ input ItemInput {
     productCode: String!
     productName: String!
     quantity: Int!
+    orderId: Int!
 }
 
 type Mutation {
+    updateItem(itemId: Int!, item: ItemInput!): Item!
     createOrder(input: OrderInput!): Order!
     updateOrder(orderId: Int!, input: OrderInput!): Order!
-    deleteOrder(orderId: Int!): Boolean!
+    deleteOrder(orderId: Int!): Boolean!  
 }
-
+   
 type Query {
     orders: [Order!]!
 }

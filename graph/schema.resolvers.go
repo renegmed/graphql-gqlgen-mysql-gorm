@@ -5,12 +5,30 @@ package graph
 
 import (
 	"context"
-	"fmt"
 	"log"
 
 	"github.com/renegmed/graphql-gqlgen-mysql-gorm/graph/generated"
 	"github.com/renegmed/graphql-gqlgen-mysql-gorm/graph/model"
 )
+
+func (r *mutationResolver) UpdateItem(ctx context.Context, itemID int, item model.ItemInput) (*model.Item, error) {
+	//log.Println("++++ Updated Item:\n\t", itemID)
+	updatedItem := model.Item{
+		ID:          itemID,
+		ProductCode: item.ProductCode,
+		ProductName: item.ProductName,
+		Quantity:    item.Quantity,
+		OrderID:     item.OrderID,
+	}
+
+	log.Println("++++ Updated item:\n\t", updatedItem)
+
+	err := r.DB.Save(&updatedItem).Error
+	if err != nil {
+		return nil, err
+	}
+	return &updatedItem, nil
+}
 
 func (r *mutationResolver) CreateOrder(ctx context.Context, input model.OrderInput) (*model.Order, error) {
 	order := model.Order{
@@ -18,6 +36,9 @@ func (r *mutationResolver) CreateOrder(ctx context.Context, input model.OrderInp
 		OrderAmount:  input.OrderAmount,
 		Items:        mapItemsFromInput(input.Items),
 	}
+
+	log.Println("++++ Create order:\n\t", order)
+
 	err := r.DB.Create(&order).Error
 	if err != nil {
 		return nil, err
@@ -35,7 +56,7 @@ func (r *mutationResolver) UpdateOrder(ctx context.Context, orderID int, input m
 
 	log.Println("++++ Updated order:\n\t", updatedOrder)
 
-	err := r.DB.Update(&updatedOrder).Error //.Save(&updatedOrder).Error
+	err := r.DB.Save(&updatedOrder).Error
 	if err != nil {
 		return nil, err
 	}
@@ -46,10 +67,6 @@ func (r *mutationResolver) DeleteOrder(ctx context.Context, orderID int) (bool, 
 	r.DB.Where("order_id = ?", orderID).Delete(&model.Item{})
 	r.DB.Where("id = ?", orderID).Delete(&model.Order{})
 	return true, nil
-}
-
-func (r *mutationResolver) UpdateItem(ctx context.Context, itemID int, input model.ItemInput) (*model.Item, error) {
-	panic(fmt.Errorf("not implemented"))
 }
 
 func (r *queryResolver) Orders(ctx context.Context) ([]*model.Order, error) {
@@ -84,6 +101,7 @@ func mapItemsFromInput(itemsInput []*model.ItemInput) []*model.Item {
 			ProductCode: itemInput.ProductCode,
 			ProductName: itemInput.ProductName,
 			Quantity:    itemInput.Quantity,
+			OrderID:     itemInput.OrderID,
 		})
 	}
 	return items

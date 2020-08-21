@@ -10,9 +10,9 @@ import (
 	"github.com/99designs/gqlgen/graphql/playground"
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/jinzhu/gorm"
-	"github.com/soberkoder/go-orders-graphql-api/graph"
-	"github.com/soberkoder/go-orders-graphql-api/graph/generated"
-	"github.com/soberkoder/go-orders-graphql-api/graph/model"
+	"github.com/renegmed/graphql-gqlgen-mysql-gorm/graph"
+	"github.com/renegmed/graphql-gqlgen-mysql-gorm/graph/generated"
+	"github.com/renegmed/graphql-gqlgen-mysql-gorm/graph/model"
 )
 
 const defaultPort = "8080"
@@ -36,8 +36,7 @@ func initDB() {
 
 	db.AutoMigrate(&model.Order{}, &model.Item{})
 
-	db.Model(&model.Item{}).AddForeignKey("order_id", "orders(id)", "CASCADE", "CASCADE")
-
+	// db.Model(&model.Item{}).AddForeignKey("order_id", "orders(id)", "CASCADE", "CASCADE")
 }
 
 func main() {
